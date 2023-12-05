@@ -10,16 +10,40 @@ repository 'https://github.com/FRACTAL-GAME-STUDIOS/fractal_boilerplate_lua_angu
 ui_page "web/dist/index.html"
 
 client_scripts {
-	"client/cl_main.lua",
-	"client/cl_utils.lua"
+	"bridge/custom/client/cl_main.lua",
+	"bridge/esx/client/cl_main.lua",
+	"bridge/qbcore/client/cl_main.lua",
+	"bridge/inventory/**/cl_main.lua",
+	"bridge/target/**/cl_main.lua",
+
+	"core/cl_main.lua",
+
+	"module/**/client/cl_main.lua",
+	"module/**/client/cl_utils.lua",
 }
 
 server_scripts {
-	"server/sv_main.lua"
+	'@oxmysql/lib/MySQL.lua',
+	"bridge/custom/server/sv_main.lua",
+	"bridge/esx/server/sv_main.lua",
+	"bridge/qbcore/server/sv_main.lua",
+	"bridge/inventory/**/sv_main.lua",
+	"bridge/target/**/sv_main.lua",
+
+	--"core/sv_main.lua",
+
+	"module/**/server/sv_main.lua",
 }
 
 shared_scripts {
-	"shared/sh_main.lua"
+	'@ox_lib/init.lua',
+
+	"core/sh_main.lua",
+
+	"module/**/shared/sh_main.lua",
+
+	"shared/sh_main.lua",
+	"shared/sh_functions.lua"
 }
 
 files {
