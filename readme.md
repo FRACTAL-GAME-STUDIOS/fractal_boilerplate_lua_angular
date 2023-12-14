@@ -181,7 +181,9 @@ npm run watch
 
 **Production Builds**
 
-When you are done with development phase for your resource. You must create a production build that is optimized and minimized.
+When you are done with development phase for your resource. You must create a production build that is optimized and minimized.f
+
+`fivem boilerplate`
 
 You can do this by running the following:
 
