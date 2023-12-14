@@ -187,5 +187,3 @@ You can do this by running the following:
 ```sh
 npm run build
 ```
-
-`fivem boilerplate`
