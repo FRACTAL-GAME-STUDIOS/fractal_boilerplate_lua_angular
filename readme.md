@@ -141,7 +141,7 @@ this.nui.fetchNui<ReturnData>("getClientData")
 	});
 ```
 
-**dispatchDebugMessage**
+**bakendSimulator**
 
 This is a function allowing for mocking dispatched game script actions in a browser environment. It will trigger `fromMessageAction` handlers as if they were dispatched by the game scripts. **It will only fire if the current environment is a regular browser and not CEF**
 
@@ -150,7 +150,7 @@ This is a function allowing for mocking dispatched game script actions in a brow
 ```ts
 // This will target the fromMessageAction observers registered with `setVisible`
 // and pass them the data of `true`
-this.nui.dispatchDebugMessages([
+this.nui.backendSimulator([
 	{
 		action: "setVisible",
 		data: true
