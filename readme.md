@@ -150,7 +150,7 @@ This is a function allowing for mocking dispatched game script actions in a brow
 ```ts
 // This will target the fromMessageAction observers registered with `setVisible`
 // and pass them the data of `true`
-this.nui.backendSimulator([
+this.nui.dispatchBackEvents([
 	{
 		action: "setVisible",
 		data: true
