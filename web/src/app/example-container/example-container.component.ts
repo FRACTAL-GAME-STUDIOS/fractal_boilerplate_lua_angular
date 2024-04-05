@@ -1,5 +1,6 @@
-import { Component } from "@angular/core";
-import { NuiService } from "../nui.service";
+import { Component } from '@angular/core';
+import { NuiService } from '../core/services/nui.service';
+import { CommonModule } from '@angular/common';
 
 interface ReturnData {
 	x: number;
@@ -8,12 +9,14 @@ interface ReturnData {
 }
 
 @Component({
-	selector: "app-example-container",
-	templateUrl: "./example-container.component.html",
-	styleUrls: ["./example-container.component.scss"]
+  selector: 'app-example-container',
+  standalone: true,
+  imports: [],
+  templateUrl: './example-container.component.html',
+  styleUrl: './example-container.component.scss'
 })
 export class ExampleContainerComponent {
-	clientData?: ReturnData;
+  clientData?: ReturnData;
 
 	constructor(private nui: NuiService) {}
 
