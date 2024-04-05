@@ -1,13 +1,17 @@
-import { Component, HostListener, OnInit } from "@angular/core";
-import { NuiService } from "./nui.service";
+import {  Component, HostListener, OnInit } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { NuiService } from './core/services/nui.service';
+import { ExampleContainerComponent } from "./example-container/example-container.component";
 
 @Component({
-	selector: "app-root",
-	templateUrl: "./app.component.html",
-	styleUrls: ["./app.component.scss"]
+    selector: 'app-root',
+    standalone: true,
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.scss',
+    imports: [RouterOutlet, ExampleContainerComponent]
 })
-export class AppComponent implements OnInit {
-	visible: boolean = false;
+export class AppComponent {
+  visible: boolean = false;
 
 	constructor(private nui: NuiService) {}
 
@@ -20,7 +24,7 @@ export class AppComponent implements OnInit {
 		});
 
 		// This will set the NUI to visible if we are developing in browser
-		this.nui.backendSimulator([
+		this.nui.dispatchBackEvents([
 			{
 				action: "setVisible",
 				data: true
@@ -30,7 +34,7 @@ export class AppComponent implements OnInit {
 
 	@HostListener("window:keydown", ["$event"])
 	handleKeyboardEvent(event: KeyboardEvent) {
-		if (["Backspace", "Escape"].includes(event.code)) {
+		if (["Escape"].includes(event.code)) {
 			if (!this.nui.isEnvBrowser()) this.nui.fetchNui("hideFrame");
 			this.visible = false;
 		}
