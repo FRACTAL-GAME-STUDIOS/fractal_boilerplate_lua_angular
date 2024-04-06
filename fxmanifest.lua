@@ -15,8 +15,9 @@ files {
 
 client_scripts {
 	"bridge/**/**/cl_main.lua",
+	"bridge/**/cl_main.lua",
 	
-	"core/cl_main.lua",
+	"core/client/cl_main.lua",
 
 	"modules/**/client/cl_main.lua",
 	"modules/**/client/cl_utils.lua",
@@ -26,18 +27,21 @@ server_scripts {
 	'@oxmysql/lib/MySQL.lua',
 
 	"bridge/**/**/sv_main.lua",
+	"bridge/**/sv_main.lua",
 
 	"modules/**/server/sv_main.lua",
 
-	--"core/sv_main.lua",
+	"core/server/sv_main.lua",
 }
 
 shared_scripts {
 	'@ox_lib/init.lua',
 
-	"core/sh_main.lua",
+	"core/shared/sh_main.lua",
+	"core/shared/sh_config.lua",
 
-	--"modules/**/shared/sh_main.lua",
+	"modules/**/shared/sh_main.lua",
+	"modules/**/shared/modules/module_*.lua",
 
 	"shared/sh_main.lua",
 	"shared/sh_functions.lua"
