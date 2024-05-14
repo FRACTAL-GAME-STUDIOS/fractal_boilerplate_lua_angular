@@ -27,7 +27,7 @@ end
 
 RegisterNetEvent("hospital:server:SetDeathStatus", function(status)
     local source = source
-    TriggerClientEvent("fractal_craftingSetDeathStatus", source, status)
+    TriggerClientEvent("fractal_boilerplate:SetDeathStatus", source, status)
 end)
 
 function AddMoney(source, count)
@@ -135,7 +135,7 @@ Citizen.CreateThread(function()
         return (Inventory.GetItemCount(source, name) > 0)
     end
 
-    RegisterCallback("fractal_craftinggetInventory", function(source, cb)
+    RegisterCallback("fractal_boilerplate:getInventory", function(source, cb)
         cb(Inventory.GetInventory(source))
     end)
 

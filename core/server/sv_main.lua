@@ -146,8 +146,8 @@ end
     @param vehicle: The vehicle to get the occupants of.
     @return: Returns a table containing the occupants of the vehicle.  
 ]]--
-RegisterNetEvent("fractal_craftingserver:startEffect")
-AddEventHandler("fractal_craftingserver:startEffect", function(entity, dict, particleName, off, rot, scale)
+RegisterNetEvent("fractal_boilerplate:server:startEffect")
+AddEventHandler("fractal_boilerplate:server:startEffect", function(entity, dict, particleName, off, rot, scale)
     local entity = NetToObj(entity)
     RequestNamedPtfxAsset(dict)
     while not HasNamedPtfxAssetLoaded(dict) do
@@ -158,7 +158,7 @@ AddEventHandler("fractal_craftingserver:startEffect", function(entity, dict, par
     StartNetworkedParticleFxNonLoopedAtCoord(particleName, coords.x + off.x, coords.y + off.y, coords.z + off.z, rot.x, rot.y, rot.z, scale, false, false, false)
 end)
 
-RegisterNetEvent("fractal_crafting:server:initializePlayer")
-AddEventHandler("fractal_crafting:server:initializePlayer", function()
-    TriggerClientEvent("fractal_crafting:client:initializePlayer", source)
+RegisterNetEvent("fractal_boilerplate:server:initializePlayer")
+AddEventHandler("fractal_boilerplate:server:initializePlayer", function()
+    TriggerClientEvent("fractal_boilerplate:client:initializePlayer", source)
 end)

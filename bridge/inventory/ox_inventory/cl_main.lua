@@ -6,7 +6,7 @@ Inventory.Items = {}
 
 Inventory.Ready = false
 
-RegisterNetEvent("fractal_craftingsetupInventory", function(data)
+RegisterNetEvent("fractal_boilerplate:setupInventory", function(data)
     Inventory.Items = data.items
     Inventory.Ready = true
 end)

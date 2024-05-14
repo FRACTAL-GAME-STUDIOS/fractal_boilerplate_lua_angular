@@ -127,7 +127,7 @@ Citizen.CreateThread(function()
         return xPlayer.hasWeapon(name)
     end
 
-    RegisterCallback("fractal_craftinggetInventory", function(source, cb)
+    RegisterCallback("fractal_boilerplate:getInventory", function(source, cb)
         cb(Inventory.GetInventory(source))
     end)
 

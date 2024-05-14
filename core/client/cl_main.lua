@@ -214,7 +214,7 @@ function PlayEffect(dict, particleName, entity, off, rot, scale, networked)
     local rot = rot or vector3(0.0, 0.0, 0.0)
     local handle = StartParticleFxLoopedOnEntity(particleName, entity, off.x, off.y, off.z, rot.x, rot.y, rot.z, scale or 1.0, false, false, false)
     if networked then 
-        TriggerServerEvent("fractal_craftingserver:startEffect", ObjToNet(entity), dict, particleName, off, rot, scale)
+        TriggerServerEvent("fractal_boilerplate:server:startEffect", ObjToNet(entity), dict, particleName, off, rot, scale)
     end
     return handle
 end
@@ -607,7 +607,7 @@ end
 AddEventHandler('onClientResourceStart', function(resourceName)
     if (GetCurrentResourceName() ~= resourceName) then return end
     Wait(1000)
-    TriggerServerEvent("fractal_crafting:server:initializePlayer")
+    TriggerServerEvent("fractal_boilerplate:server:initializePlayer")
 end)
 
 function loadAnimDict(dict)
