@@ -1,5 +1,6 @@
 ---@diagnostic disable: lowercase-global
 local blips = {}
+local globalProps = {}
 
 function CreateBlip(data)
     local x,y,z = table.unpack(data.coords)
@@ -175,11 +176,25 @@ function GetConeVision(npc, entity, viewAngle, viewDistance, rotation)
     return isFacingEntity
 end
 
+function RequestProp(modelHash)
+    RequestModel(modelHash)
+    while not HasModelLoaded(modelHash) do
+        debugPrint("Model not loaded, waiting...")
+        Wait(0)
+    end
+    return modelHash
+end
+
 function CreateProp(modelHash, ...)
     RequestModel(modelHash)
-    while not HasModelLoaded(modelHash) do Wait(0) end
+    while not HasModelLoaded(modelHash) do
+        --debugPrint("Model not loaded, waiting...")
+        Wait(0)
+    end
     local obj = CreateObject(modelHash, ...)
     SetModelAsNoLongerNeeded(modelHash)
+
+    globalProps[#globalProps + 1] = obj
     return obj
 end
 
@@ -199,7 +214,7 @@ function PlayEffect(dict, particleName, entity, off, rot, scale, networked)
     local rot = rot or vector3(0.0, 0.0, 0.0)
     local handle = StartParticleFxLoopedOnEntity(particleName, entity, off.x, off.y, off.z, rot.x, rot.y, rot.z, scale or 1.0, false, false, false)
     if networked then 
-        TriggerServerEvent("fractal_boilerplate:server:startEffect", ObjToNet(entity), dict, particleName, off, rot, scale)
+        TriggerServerEvent("fractal_craftingserver:startEffect", ObjToNet(entity), dict, particleName, off, rot, scale)
     end
     return handle
 end
@@ -290,6 +305,10 @@ local interactCheck = false
 local interactText = nil
 
 function ShowInteractText(text)
+    if not lib then
+        print("OX LIB - NOT LOADED, you need remove comment from fxmanifest.lua")
+        return
+    end
     local timer = GetGameTimer()
     interactTick = timer
     if interactText == nil or interactText ~= text then 
@@ -298,7 +317,7 @@ function ShowInteractText(text)
     end
     if interactCheck then return end
     interactCheck = true
-    CreateThread(function()
+    Citizen.CreateThread(function()
         Wait(150)
         local timer = GetGameTimer()
         interactCheck = false
@@ -319,6 +338,7 @@ function FormatOptions(index, data)
     if not options or #options < 2 then
         list[1] = ((options and options[1]) and options[1] or { label = data.label })
         list[1].name = GetCurrentResourceName() .. "_option_" .. math.random(1,999999999)
+        list[1].icon = data.icon
         list[1].onSelect = function(data)
             SelectInteraction(index, 1, data)
         end
@@ -327,6 +347,7 @@ function FormatOptions(index, data)
     for i=1, #options do
         list[i] = options[i] 
         list[i].name = GetCurrentResourceName() .. "_option_" .. math.random(1,999999999)
+        list[i].icon = data.icon
         list[i].onSelect = function(data)
             SelectInteraction(index, i, data)
         end
@@ -367,37 +388,48 @@ end
 
 function SelectInteraction(index, selection, targetData)
     if not EnableInteraction then return end
-    local pcoords = GetEntityCoords(PlayerPedId())
+    local ped = PlayerPedId()
+    local pcoords = GetEntityCoords(ped)
     local data = Interactions[index]
-    if not data.target and #(data.coords - pcoords) > Core.InteractDistance then 
-        return ShowNotification(Lang("interact_far"))
+
+    if not data.target then
+        local dist = Vdist(pcoords.x, pcoords.y, pcoords.z, data.coords.x, data.coords.y, data.coords.z)
+        if dist > Core.InteractDistance then 
+            return ShowNotification(Lang("interact_far"))
+        end
     end
-    Interactions[index].selected(selection, targetData)
+
+    if data.selected then
+        data.selected(selection, targetData)
+    end
 end
 
 function CreateInteraction(data, selected)
     local index
     repeat
         index = math.random(1, 999999999)
-    until not Interactions[index]
+    until not Interactions[index]  -- Ensure a unique index
+
     local options = FormatOptions(index, data)
     Interactions[index] = {
         selected = selected,
         options = options,
         label = data.label,
         model = data.model,
-        coords = data.coords,
+        coords = fixTarget(data.coords, data.fixTarget),
         radius = data.radius or 1.0,
         heading = data.heading,
     }
-    if Core.UseTarget then
-        if data.target then
-            AddTargetModel(data.target, Interactions[index].radius, Interactions[index].options)
-        else
-            Interactions[index].zone = AddTargetZone(Interactions[index].coords, Interactions[index].radius, Interactions[index].options)
-        end
+
+    if Core and Core.UseTarget then
+        Interactions[index].zone = AddTargetZone(Interactions[index].coords, Interactions[index].radius, Interactions[index].options)
     end
     return index
+end
+
+function fixTarget(coords, fixTarget)
+    if not fixTarget then return coords end
+    return vector3(coords.x + fixTarget.x, coords.y + fixTarget.y, coords.z + fixTarget.z)
 end
 
 function UpdateInteraction(index, data, selected)
@@ -414,8 +446,8 @@ function UpdateInteraction(index, data, selected)
             RemoveTargetZone(Interactions[index].zone)
             Interactions[index].zone = AddTargetZone(Interactions[index].coords, Interactions[index].radius, Interactions[index].options)
         else
-            RemoveTargetModel(Interactions[index].target, Interactions[index].options)
-            AddTargetModel(Interactions[index].target, Interactions[index].radius, Interactions[index].options)
+            RemoveModel(Interactions[index].target, Interactions[index].options)
+            AddModel(Interactions[index].target, Interactions[index].options)
         end
     end
 end
@@ -437,28 +469,59 @@ function DeleteInteraction(index)
 end
 
 Citizen.CreateThread(function()
+    if not lib then
+        print("OX LIB - NOT LOADED, you need remove comment from fxmanifest.lua")
+        return
+    end
+    local wait = 5000
     while true do 
         local ped = PlayerPedId()
         local pcoords = GetEntityCoords(ped)
-        local wait = 1500
-        for k,v in pairs(Interactions) do 
-            local coords = v.coords
-            if coords then
-                local dist = #(pcoords-coords)
-                if (dist < Core.RenderDistance) then 
-                    EnsureInteractionModel(k)
-                    if not Core.UseTarget or v.hiddenKeypress then
-                        if not Core.UseTarget and not v.hiddenKeypress and not v.model and Core.Marker and Core.Marker.enabled then
-                            wait = 0
-                            DrawMarker(Core.Marker.id, coords.x, coords.y, coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
-                            Core.Marker.scale, Core.Marker.scale, Core.Marker.scale, Core.Marker.color[1], 
-                            Core.Marker.color[2], Core.Marker.color[3], Core.Marker.color[4], false, true)
+        if #Interactions >= 1 then
+            wait = 1500
+            for k,v in pairs(Interactions) do 
+                local coords = v.coords
+                if coords then
+                    local dist = Vdist(pcoords.x, pcoords.y, pcoords.z, coords.x, coords.y, coords.z)
+                    if (dist < Core.RenderDistance) then 
+                        EnsureInteractionModel(k)
+                        if not Core.UseTarget or v.hiddenKeypress then
+                            if not Core.UseTarget and not v.hiddenKeypress and not v.model and Core.Marker and Core.Marker.enabled then
+                                wait = 0
+                                DrawMarker(Core.Marker.id, coords.x, coords.y, coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+                                Core.Marker.scale, Core.Marker.scale, Core.Marker.scale, Core.Marker.color[1], 
+                                Core.Marker.color[2], Core.Marker.color[3], Core.Marker.color[4], false, true)
+                            end
+                            if dist < Core.InteractDistance then
+                                wait = 0 
+                                if not ShowInteractText("[E] - " .. v.label) and IsControlJustPressed(1, 51) then
+                                    if not v.options or #v.options < 2 then 
+                                        SelectInteraction(k, 1)
+                                    else 
+                                        lib.registerContext({
+                                            id = 'fractal_'..k,
+                                            title = v.title or "Options",
+                                            options = v.options
+                                        })
+                                        lib.showContext('fractal_'..k)
+                                    end
+                                end
+                            end
                         end
-                        if dist < Core.InteractDistance then
-                            wait = 0 
+                    elseif v.entity then
+                        DeleteInteractionEntity(k)
+                    end
+                elseif not Core.UseTarget and v.target then
+                    local entity = GetNearestEntityModel(v.target)
+                    if entity then
+                        local offset = v.offset or vector3(0.0, 0.0, 0.0)
+                        local coords = GetOffsetFromEntityInWorldCoords(entity, offset.x, offset.y, offset.z)
+                        local dist = #(pcoords-coords)
+                        if dist < v.radius then
+                        wait = 0 
                             if not ShowInteractText("[E] - " .. v.label) and IsControlJustPressed(1, 51) then
                                 if not v.options or #v.options < 2 then 
-                                    SelectInteraction(k, 1)
+                                    SelectInteraction(k, 1, {entity = entity, coords = coords, dist = dist})
                                 else 
                                     lib.registerContext({
                                         id = 'fractal_'..k,
@@ -467,30 +530,6 @@ Citizen.CreateThread(function()
                                     })
                                     lib.showContext('fractal_'..k)
                                 end
-                            end
-                        end
-                    end
-                elseif v.entity then
-                    DeleteInteractionEntity(k)
-                end
-            elseif not Core.UseTarget and v.target then
-                local entity = GetNearestEntityModel(v.target)
-                if entity then
-                    local offset = v.offset or vector3(0.0, 0.0, 0.0)
-                    local coords = GetOffsetFromEntityInWorldCoords(entity, offset.x, offset.y, offset.z)
-                    local dist = #(pcoords-coords)
-                    if dist < v.radius then
-                       wait = 0 
-                        if not ShowInteractText("[E] - " .. v.label) and IsControlJustPressed(1, 51) then
-                            if not v.options or #v.options < 2 then 
-                                SelectInteraction(k, 1, {entity = entity, coords = coords, dist = dist})
-                            else 
-                                lib.registerContext({
-                                    id = 'fractal_'..k,
-                                    title = v.title or "Options",
-                                    options = v.options
-                                })
-                                lib.showContext('fractal_'..k)
                             end
                         end
                     end
@@ -507,7 +546,80 @@ end
 
 AddEventHandler('onResourceStop', function(resourceName)
     if (GetCurrentResourceName() ~= resourceName) then return end
-    for k,v in pairs(Interactions) do 
+    for k,v in pairs(Interactions) do
+        debugPrint("Deleting Interaction: " .. k)
         DeleteInteraction(k)
     end
+
+    for k,v in pairs(globalProps) do
+        debugPrint("Deleting Prop: " .. k)
+        DeleteEntity(v)
+    end
+
+    for k,v in pairs(blips) do 
+        debugPrint("Deleting Blip: " .. k)
+        RemoveBlip(v)
+    end
+
+    SetNuiFocus(false, false)
 end)
+
+function progress(message, duration, type)
+    if Core.OxProgress then
+        if not lib then
+            print("OX LIB - NOT LOADED, you need remove comment from fxmanifest.lua")
+            return
+        end
+        if type == 'circle' then
+            return lib.progressCircle({
+                duration = duration * 1000,
+                label = message,
+                position = 'bottom',
+                useWhileDead = false,
+                canCancel = true,
+                disable = {
+                    car = true,
+                    move = true,
+                    combat = true,
+                    mouse = false
+                },
+            })
+        elseif type == 'default' then
+            return lib.progressBar({
+                duration = duration * 1000,
+                label = message,
+                useWhileDead = false,
+                canCancel = true,
+                disable = {
+                    car = true,
+                    move = true,
+                    combat = true,
+                    mouse = false
+                },
+            })
+        end
+    else
+        Core.ProgressBar()
+    end
+    
+end
+
+AddEventHandler('onClientResourceStart', function(resourceName)
+    if (GetCurrentResourceName() ~= resourceName) then return end
+    Wait(1000)
+    TriggerServerEvent("fractal_crafting:server:initializePlayer")
+end)
+
+function loadAnimDict(dict)
+    while not HasAnimDictLoaded(dict) do
+        RequestAnimDict(dict)
+        Wait(0)
+    end
+end
+
+function loadProp(prop)
+    while not HasModelLoaded(prop) do
+        RequestModel(prop)
+        Wait(0)
+    end
+end

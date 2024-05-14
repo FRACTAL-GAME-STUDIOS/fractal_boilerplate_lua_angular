@@ -50,7 +50,7 @@ Inventory.HasWeapon = function(source, name, count)
 end
 
 function InitializeInventory()
-    RegisterCallback("fractal_boilerplate:getInventory", function(source, cb)
+    RegisterCallback("fractal_craftinggetInventory", function(source, cb)
         cb(Inventory.GetInventory(source))
     end)
     

@@ -10,6 +10,15 @@ function ServerCallback(name, cb, ...)
     ESX.TriggerServerCallback(name, cb,  ...)
 end
 
+function ServerCallbackSync(name, ...)
+    local result = nil
+    ESX.TriggerServerCallback(name, function(data)
+        result = data
+    end, ...)
+    while result == nil do Wait(0) end
+    return result
+end
+
 function GetPlayersInArea(coords, radius)
     local coords = coords or GetEntityCoords(PlayerPedId())
     local radius = radius or 3.0
@@ -23,28 +32,21 @@ function GetPlayersInArea(coords, radius)
     return players
 end
 
-RegisterNetEvent(GetCurrentResourceName()..":showNotification", function(text)
-    ShowNotification(text)
-end)
-
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded',function(xPlayer, isNew, skin)
-    TriggerServerEvent("fractal_boilerplate:initializePlayer")
+    -- THROW NEW EXCEPTION - METHOD NOT IMPLEMENTED
 end)
 
 local alreadySpawned = false
-
 RegisterNetEvent('esx:onPlayerDeath', function()
     CheckBreakout = false
 end)
 
 RegisterNetEvent('esx:onPlayerSpawn', function()
-    if not alreadySpawned then -- Prevents TP to hospital on-load.
+    if not alreadySpawned then
         alreadySpawned = true
         return
     end
-    TeleportHospital()
-    CheckBreakout = true
 end)
 
 function ToggleOutfit(inPrison)
@@ -67,7 +69,7 @@ end
 
 -- Inventory Fallback
 
-CreateThread(function()
+Citizen.CreateThread(function()
     Wait(100)
     
     if InitializeInventory then return InitializeInventory() end -- Already loaded through inventory folder.
@@ -78,7 +80,7 @@ CreateThread(function()
     
     Inventory.Ready = false
     
-    RegisterNetEvent("fractal_boilerplate:setupInventory", function(data)
+    RegisterNetEvent("fractal_craftingsetupInventory", function(data)
         Inventory.Items = data.items
         Inventory.Ready = true
     end)

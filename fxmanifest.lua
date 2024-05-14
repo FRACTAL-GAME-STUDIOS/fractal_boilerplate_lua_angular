@@ -18,6 +18,8 @@ client_scripts {
 	"bridge/**/cl_main.lua",
 	
 	"core/client/cl_main.lua",
+	"core/client/modules/*.lua",
+	"core/client/modules/**/*.lua",
 
 	"modules/**/client/cl_main.lua",
 	"modules/**/client/cl_utils.lua",
@@ -32,6 +34,8 @@ server_scripts {
 	"modules/**/server/sv_main.lua",
 
 	"core/server/sv_main.lua",
+	"core/server/modules/*.lua",
+	"core/server/modules/**/*.lua",
 }
 
 shared_scripts {
@@ -40,9 +44,20 @@ shared_scripts {
 	"core/shared/sh_main.lua",
 	"core/shared/sh_config.lua",
 
+	"locales/*.lua",
+
 	"modules/**/shared/sh_main.lua",
+	"modules/**/shared/sh_*.lua",
 	"modules/**/shared/modules/module_*.lua",
 
 	"shared/sh_main.lua",
 	"shared/sh_functions.lua"
 }
+
+
+file {
+    'stream/**/*.ytyp',
+	'web/assets/**/*',
+}
+
+data_file 'DLC_ITYP_REQUEST' 'stream/**/*.ytyp'

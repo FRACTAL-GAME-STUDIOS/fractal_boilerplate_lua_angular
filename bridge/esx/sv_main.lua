@@ -6,12 +6,16 @@ function RegisterCallback(name, cb)
     ESX.RegisterServerCallback(name, cb)
 end
 
+function Player(source)
+    return ESX.GetPlayerFromId(source)
+end
+
 function RegisterUsableItem(...)
     ESX.RegisterUsableItem(...)
 end
 
 function ShowNotification(target, text)
-	TriggerClientEvent(GetCurrentResourceName()..":showNotification", target, text)
+    ESX.ShowNotification(target, text)
 end
 
 function GetIdentifier(source)
@@ -55,7 +59,7 @@ end
 
 -- Inventory Fallback
 
-CreateThread(function()
+Citizen.CreateThread(function()
     Wait(100)
 
     if InitializeInventory then return InitializeInventory() end -- Already loaded through inventory folder.
@@ -123,7 +127,7 @@ CreateThread(function()
         return xPlayer.hasWeapon(name)
     end
 
-    RegisterCallback("fractal_boilerplate:getInventory", function(source, cb)
+    RegisterCallback("fractal_craftinggetInventory", function(source, cb)
         cb(Inventory.GetInventory(source))
     end)
 

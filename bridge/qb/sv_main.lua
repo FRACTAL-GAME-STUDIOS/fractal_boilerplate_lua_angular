@@ -11,7 +11,7 @@ function RegisterUsableItem(...)
 end
 
 function ShowNotification(target, text)
-	TriggerClientEvent(GetCurrentResourceName()..":showNotification", target, text)
+    QBCore.Functions.Notify(target, text)
 end
 
 function GetIdentifier(source)
@@ -27,7 +27,7 @@ end
 
 RegisterNetEvent("hospital:server:SetDeathStatus", function(status)
     local source = source
-    TriggerClientEvent("fractal_boilerplate:SetDeathStatus", source, status)
+    TriggerClientEvent("fractal_craftingSetDeathStatus", source, status)
 end)
 
 function AddMoney(source, count)
@@ -65,7 +65,7 @@ end
 
 -- Inventory Fallback
 
-CreateThread(function()
+Citizen.CreateThread(function()
     Wait(100)
     
     if InitializeInventory then return InitializeInventory() end -- Already loaded through inventory folder.
@@ -135,7 +135,7 @@ CreateThread(function()
         return (Inventory.GetItemCount(source, name) > 0)
     end
 
-    RegisterCallback("fractal_boilerplate:getInventory", function(source, cb)
+    RegisterCallback("fractal_craftinggetInventory", function(source, cb)
         cb(Inventory.GetInventory(source))
     end)
 

@@ -2,8 +2,21 @@ if GetResourceState('qb-core') ~= 'started' then return end
 
 QBCore = exports['qb-core']:GetCoreObject()
 
+function Player(source)
+    return QBCore.Functions.GetPlayer(source)
+end
+
 function ServerCallback(name, cb, ...)
     QBCore.Functions.TriggerCallback(name, cb,  ...)
+end
+
+function ServerCallbackSync(name, cb, ...)
+    local result = nil
+    QBCore.Functions.TriggerCallback(name, function(data)
+        result = data
+    end, ...)
+    while result == nil do Wait(0) end
+    return result
 end
 
 function ShowNotification(text)
@@ -28,15 +41,14 @@ RegisterNetEvent(GetCurrentResourceName()..":showNotification", function(text)
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    TriggerServerEvent("fractal_boilerplate:initializePlayer")
+    -- THROW NEW EXCEPTION - METHOD NOT IMPLEMENTED
 end)
 
-RegisterNetEvent('fractal_boilerplate:SetDeathStatus', function(status)
+RegisterNetEvent('fractal_craftingSetDeathStatus', function(status)
     if status then
-        CheckBreakout = false 
+        -- Player died
     else
-        TeleportHospital()
-        CheckBreakout = true  
+        -- Player respawned  
     end
 end)
 
@@ -86,7 +98,7 @@ function GetConvertedClothes(oldClothes)
     return clothes
 end
 
-CreateThread(function()
+Citizen.CreateThread(function()
     for k,v in pairs(Config.Prisons) do
         local prison = v
         local outfits = prison.outfit or Config.Default.outfit
@@ -100,7 +112,7 @@ end)
 
 -- Inventory Fallback
 
-CreateThread(function()
+Citizen.CreateThread(function()
     Wait(100)
     
     if InitializeInventory then return InitializeInventory() end -- Already loaded through inventory folder.
@@ -111,7 +123,7 @@ CreateThread(function()
     
     Inventory.Ready = false
     
-    RegisterNetEvent("fractal_boilerplate:setupInventory", function(data)
+    RegisterNetEvent("fractal_craftingsetupInventory", function(data)
         Inventory.Items = data.items
         Inventory.Ready = true
     end)

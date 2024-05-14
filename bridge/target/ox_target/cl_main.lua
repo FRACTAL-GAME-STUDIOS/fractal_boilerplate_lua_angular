@@ -1,4 +1,4 @@
-if GetResourceState('ox_target') ~= 'started' or not Config.UseTarget then return end
+if GetResourceState('ox_target') ~= 'started' or not Core.UseTarget then return end
 
 function AddModel(models, options)
     local optionsNames = {}

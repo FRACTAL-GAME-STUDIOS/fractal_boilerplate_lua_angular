@@ -17,14 +17,46 @@ function lerp(a, b, t) return a + (b-a) * t end
 
 function v3(coords) return vec3(coords.x, coords.y, coords.z), coords.w end
 
-function contains(table, element)
-    for _, value in pairs(table) do
-        if value == element then
+function contains(table, value, caseSensitive)
+    for i = 1, #table do
+        if caseSensitive then
+            if table[i] == value then
+                return true
+            end
+        else
+            if string.lower(table[i]) == string.lower(value) then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+function containsKey(table, key, caseSensitive)
+    for k, _ in pairs(table) do
+        if caseSensitive then
+            if k == key then
+                return true
+            end
+        else
+            if string.lower(k) == string.lower(key) then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+function containsType(table, type, typeToFind)
+    for _, item in ipairs(table) do
+        if item[type] == typeToFind then
             return true
         end
     end
     return false
 end
+
+
 
 function GetUUID(length)
     local random = math.random
@@ -207,4 +239,8 @@ function DrawMissionText(text)
     BeginTextCommandDisplayText("STRING")
     AddTextComponentSubstringPlayerName(text)
     EndTextCommandDisplayText(0.5, 0.95)
+end
+
+function GetInventoryImage(name)
+    return ('%s%s%s'):format(Core.InventoryURL, name, Core.InventoryFileExt)
 end

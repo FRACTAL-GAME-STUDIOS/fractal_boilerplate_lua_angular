@@ -1,4 +1,4 @@
-if GetResourceState('ox_target') == 'started' or GetResourceState('qb-target') ~= 'started' or not Config.UseTarget then return end
+if GetResourceState('ox_target') == 'started' or GetResourceState('qb-target') ~= 'started' or not Core.UseTarget then return end
 
 local Zones = {}
 
@@ -18,7 +18,7 @@ end
 function AddTargetZone(coords, radius, options)
     local index
     repeat
-        index = "prison_coord_" .. math.random(1, 999999999)
+        index = "boilerplate_" .. math.random(1, 999999999)
     until not Zones[index]
     for i=1, #options do 
         if options[i].onSelect then
