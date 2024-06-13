@@ -16,6 +16,7 @@ files {
 client_scripts {
 	"bridge/**/**/cl_main.lua",
 	"bridge/**/cl_main.lua",
+	"bridge/**/module_*.lua",
 	
 	"core/client/cl_main.lua",
 	"core/client/modules/*.lua",
