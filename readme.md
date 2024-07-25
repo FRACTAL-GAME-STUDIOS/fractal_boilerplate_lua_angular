@@ -1,4 +1,4 @@
-# Fractal Game Studio - Angular Lua Boilerplate
+# Fractal Game Studios - Angular Lua Boilerplate
 
 This repository is a basic boilerplate for getting started with Angular in NUI. It contains several helpful utilities and was generated with the [Angular CLI](https://github.com/angular/angular-cli). The project is set up with SCSS as stylesheet format. It is for both browser and in-game based development workflows.
 
@@ -6,11 +6,11 @@ For in-game workflows, run `npm run watch` which will watch the files and build 
 
 This version of the boilerplate is meant for the CfxLua runtime, but should work with other languages if you copy over the `web` folder and the required `fxmanifest.lua` entries.
 
-This boilerplate was heavily inspired by the [React boilerplate](https://github.com/project-error/fivem-react-boilerplate-lua) made by Project Error.
+This boilerplate was inspired by the [React boilerplate](https://github.com/project-error/fivem-react-boilerplate-lua) made by Project Error.
 
 ## Requirements
 
--   [Node ^14.20.0 || ^16.13.0 || ^18.10.0](https://nodejs.org/en/)
+-   [Node LTS Latest](https://nodejs.org/en/)
 
 _A basic understanding of the modern web development workflow. If you don't know this yet, Angular will not be for you. To get started with Angular go to https://angular.io/start._
 
@@ -141,7 +141,7 @@ this.nui.fetchNui<ReturnData>("getClientData")
 	});
 ```
 
-**bakendSimulator**
+**dispatchBackEvents**
 
 This is a function allowing for mocking dispatched game script actions in a browser environment. It will trigger `fromMessageAction` handlers as if they were dispatched by the game scripts. **It will only fire if the current environment is a regular browser and not CEF**
 
