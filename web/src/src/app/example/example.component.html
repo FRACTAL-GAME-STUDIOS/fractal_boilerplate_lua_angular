@@ -1,0 +1,15 @@
+<div class="nui-wrapper">
+  <div class="popup-thing">
+    <div>
+      <h1>This is the NUI Pop-up!</h1>
+      <p>Exit with the escape key</p>
+      <button (click)="handleGetClientData()">Get Client Data</button>
+      <div *if="clientData">
+        <h5>Returned Data:</h5>
+        <ul>
+          <li *for="let item of clientData">{{ item.name }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
