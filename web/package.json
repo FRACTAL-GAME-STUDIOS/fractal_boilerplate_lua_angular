@@ -38,6 +38,6 @@
     "karma-jasmine-html-reporter": "^2.1.0",
     "typescript": "^5.4.5",
     "undici": "^6.19.2",
-    "vite": "^5.2.13"
+    "vite": "^5.4.11"
   }
 }
