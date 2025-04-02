@@ -1,4 +1,5 @@
 Core = {
+    Language = "en", -- Language to use, make sure you have the language file in the languages folder.
     debug = {
         npcs = {
             ['ConeVision'] = false,

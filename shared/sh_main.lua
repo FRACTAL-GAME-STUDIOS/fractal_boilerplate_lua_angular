@@ -1,3 +1,3 @@
 Config = {
-    Language = "en",
+
 }

@@ -6,7 +6,7 @@ end
 RegisterCommand("show-nui", function()
     toggleNuiFrame(true)
     debugPrint("Show NUI frame")
-end)
+end, false)
 
 RegisterNUICallback("hideFrame", function(_, cb)
     toggleNuiFrame(false)

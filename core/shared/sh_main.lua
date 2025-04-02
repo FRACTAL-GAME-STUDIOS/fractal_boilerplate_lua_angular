@@ -2,7 +2,7 @@ Language = {}
 
 function Lang(name, ...)
     if name then 
-        local str = Language[Config.Language][name]
+        local str = Language[Core.Language][name]
         if str then 
             return string.format(str, ...)
         else    
