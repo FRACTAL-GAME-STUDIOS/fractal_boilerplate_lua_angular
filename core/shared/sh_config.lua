@@ -78,7 +78,51 @@ Core = {
 
     OxProgress = true,
     ProgressBar = function()
-        print("if you are using other progress there is a example AND CHANGE Config.OxProgress to false into config file;")
+        print(
+            "if you are using other progress there is a example AND CHANGE Config.OxProgress to false into config file;")
         print("exports['progressBars']:startUI(duration * 1000, message);")
     end,
+
+    Outfit = {
+        Default = {
+            male = {
+                ['arms'] = 0,
+                ['tshirt_1'] = 15,
+                ['tshirt_2'] = 0,
+                ['torso_1'] = 86,
+                ['torso_2'] = 0,
+                ['bproof_1'] = 0,
+                ['bproof_2'] = 0,
+                ['decals_1'] = 0,
+                ['decals_2'] = 0,
+                ['chain_1'] = 0,
+                ['chain_2'] = 0,
+                ['pants_1'] = 10,
+                ['pants_2'] = 2,
+                ['shoes_1'] = 56,
+                ['shoes_2'] = 0,
+                ['helmet_1'] = 14,
+                ['helmet_2'] = 0,
+            },
+            female = {
+                ['arms'] = 0,
+                ['tshirt_1'] = 15,
+                ['tshirt_2'] = 0,
+                ['torso_1'] = 86,
+                ['torso_2'] = 0,
+                ['bproof_1'] = 0,
+                ['bproof_2'] = 0,
+                ['decals_1'] = 0,
+                ['decals_2'] = 0,
+                ['chain_1'] = 0,
+                ['chain_2'] = 0,
+                ['pants_1'] = 10,
+                ['pants_2'] = 2,
+                ['shoes_1'] = 56,
+                ['shoes_2'] = 0,
+                ['helmet_1'] = 14,
+                ['helmet_2'] = 0,
+            }
+        }
+    }
 }
