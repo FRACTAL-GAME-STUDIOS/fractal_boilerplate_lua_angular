@@ -2,10 +2,20 @@ if GetResourceState('qb-core') ~= 'started' then return end
 
 QBCore = exports['qb-core']:GetCoreObject()
 
-function Player(source)
-    return QBCore.Functions.GetPlayer(source)
+
+------------------------------
+-- Basic player data functions
+------------------------------
+
+-- Returns the player's identifier.
+-- @return: String representing the player's identifier.
+function GetIdentifier()
+    local playerData = QBCore.Functions.GetPlayerData()
+    return playerData.citizenid or ''
 end
 
+-- Returns the current player data.
+-- @return: Table containing player data.
 function GetPlayerData()
     return QBCore.Functions.GetPlayerData()
 end

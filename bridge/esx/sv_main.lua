@@ -2,12 +2,12 @@ if GetResourceState('es_extended') ~= 'started' then return end
 
 ESX = exports.es_extended:getSharedObject()
 
-function RegisterCallback(name, cb)
-    ESX.RegisterServerCallback(name, cb)
-end
-
 function Player(source)
     return ESX.GetPlayerFromId(source)
+end
+
+function RegisterCallback(name, cb)
+    ESX.RegisterServerCallback(name, cb)
 end
 
 function RegisterUsableItem(...)
@@ -47,12 +47,12 @@ function CheckPermission(source, permission)
     local name = xPlayer.job.name
     local rank = xPlayer.job.grade
     local group = xPlayer.getGroup()
-    if permission.jobs[name] and permission.jobs[name] <= rank then 
+    if permission.jobs[name] and permission.jobs[name] <= rank then
         return true
     end
-    for i=1, #permission.groups do 
-        if group == permission.groups[i] then 
-            return true 
+    for i = 1, #permission.groups do
+        if group == permission.groups[i] then
+            return true
         end
     end
 end
@@ -63,19 +63,19 @@ Citizen.CreateThread(function()
     Wait(100)
 
     if InitializeInventory then return InitializeInventory() end -- Already loaded through inventory folder.
-    
+
     Inventory = {}
 
     Inventory.Items = {}
-    
+
     Inventory.Ready = false
 
     Inventory.CanCarryItem = function(source, name, count)
         local xPlayer = ESX.GetPlayerFromId(source)
-        if Config.InventoryLimit then 
+        if Config.InventoryLimit then
             local item = xPlayer.getInventoryItem(name)
             return (item.limit >= item.count + count)
-        else 
+        else
             return xPlayer.canCarryItem(name, count)
         end
     end
@@ -84,7 +84,7 @@ Citizen.CreateThread(function()
         local xPlayer = ESX.GetPlayerFromId(source)
         local items = {}
         local data = xPlayer.getInventory()
-        for i=1, #data do 
+        for i = 1, #data do
             local item = data[i]
             items[#items + 1] = {
                 name = item.name,
@@ -131,10 +131,10 @@ Citizen.CreateThread(function()
         cb(Inventory.GetInventory(source))
     end)
 
-    MySQL.ready(function() 
-        MySQL.Async.fetchAll("SELECT * FROM items;", {}, function(results) 
-            for i=1, #results do 
-                Inventory.Items[results[i].name] = {label = results[i].label}
+    MySQL.ready(function()
+        MySQL.Async.fetchAll("SELECT * FROM items;", {}, function(results)
+            for i = 1, #results do
+                Inventory.Items[results[i].name] = { label = results[i].label }
             end
             Inventory.Ready = true
         end)

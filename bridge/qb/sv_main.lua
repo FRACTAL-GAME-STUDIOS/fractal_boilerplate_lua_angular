@@ -2,6 +2,10 @@ if GetResourceState('qb-core') ~= 'started' then return end
 
 QBCore = exports['qb-core']:GetCoreObject()
 
+function Player(source)
+    return QBCore.Functions.GetPlayer(source)
+end
+
 function RegisterCallback(name, cb)
     QBCore.Functions.CreateCallback(name, cb)
 end
@@ -17,7 +21,7 @@ end
 function GetIdentifier(source)
     local source = tonumber(source)
     local xPlayer = QBCore.Functions.GetPlayer(source).PlayerData
-    return xPlayer.citizenid 
+    return xPlayer.citizenid
 end
 
 function SetPlayerMetadata(source, key, data)
@@ -33,13 +37,13 @@ end)
 function AddMoney(source, count)
     local source = tonumber(source)
     local xPlayer = QBCore.Functions.GetPlayer(source)
-    xPlayer.Functions.AddMoney('cash',count)
+    xPlayer.Functions.AddMoney('cash', count)
 end
 
 function RemoveMoney(source, count)
     local source = tonumber(source)
     local xPlayer = QBCore.Functions.GetPlayer(source)
-    xPlayer.Functions.RemoveMoney('cash',count)
+    xPlayer.Functions.RemoveMoney('cash', count)
 end
 
 function GetMoney(source)
@@ -52,28 +56,27 @@ function CheckPermission(source, permission)
     local xPlayer = QBCore.Functions.GetPlayer(source).PlayerData
     local name = xPlayer.job.name
     local rank = xPlayer.job.grade.level
-    if permission.jobs[name] and permission.jobs[name] <= rank then 
+    if permission.jobs[name] and permission.jobs[name] <= rank then
         return true
     end
-    for i=1, #permission.groups do 
-        if QBCore.Functions.HasPermission(source, permission.groups[i]) then 
-            return true 
+    for i = 1, #permission.groups do
+        if QBCore.Functions.HasPermission(source, permission.groups[i]) then
+            return true
         end
     end
 end
-
 
 -- Inventory Fallback
 
 Citizen.CreateThread(function()
     Wait(100)
-    
+
     if InitializeInventory then return InitializeInventory() end -- Already loaded through inventory folder.
-    
+
     Inventory = {}
 
     Inventory.Items = {}
-    
+
     Inventory.Ready = false
 
     Inventory.CanCarryItem = function(source, name, count)
@@ -89,7 +92,7 @@ Citizen.CreateThread(function()
         local xPlayer = QBCore.Functions.GetPlayer(source)
         local items = {}
         local data = xPlayer.PlayerData.items
-        for slot, item in pairs(data) do 
+        for slot, item in pairs(data) do
             items[#items + 1] = {
                 name = item.name,
                 label = item.label,
@@ -140,7 +143,7 @@ Citizen.CreateThread(function()
     end)
 
     for item, data in pairs(QBCore.Shared.Items) do
-        Inventory.Items[item] = {label = data.label}
+        Inventory.Items[item] = { label = data.label }
     end
     Inventory.Ready = true
 end)
