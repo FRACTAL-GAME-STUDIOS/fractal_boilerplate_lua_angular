@@ -56,7 +56,7 @@ shared_scripts {
 }
 
 
-file {
+files {
     'stream/**/*.ytyp',
 	'web/assets/**/*',
 }

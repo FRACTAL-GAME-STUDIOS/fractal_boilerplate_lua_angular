@@ -1,4 +1,5 @@
 import {  Component, HostListener, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { NuiService } from './core/services/nui.service';
 import { ExampleContainerComponent } from "./example-container/example-container.component";
@@ -8,7 +9,7 @@ import { ExampleContainerComponent } from "./example-container/example-container
     standalone: true,
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss',
-    imports: [RouterOutlet, ExampleContainerComponent]
+    imports: [CommonModule, RouterOutlet, ExampleContainerComponent]
 })
 export class AppComponent {
   visible: boolean = false;

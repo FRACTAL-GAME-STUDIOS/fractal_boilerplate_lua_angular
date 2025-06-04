@@ -11,7 +11,7 @@ interface ReturnData {
 @Component({
   selector: 'app-example-container',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './example-container.component.html',
   styleUrl: './example-container.component.scss'
 })

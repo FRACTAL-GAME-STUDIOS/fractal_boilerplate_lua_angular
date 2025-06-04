@@ -21,6 +21,7 @@ First clone the repository or use the template option and place it within your `
 ### Installation
 
 Install dependencies by navigating to the `web` folder within a terminal of your choice and type `npm i`.
+For a more detailed walkthrough check [docs/setup.md](docs/setup.md).
 
 ## Features
 
@@ -181,7 +182,7 @@ npm run watch
 
 **Production Builds**
 
-When you are done with development phase for your resource. You must create a production build that is optimized and minimized.f
+When you are done with the development phase for your resource, you must create a production build that is optimized and minimized.
 You can do this by running the following:
 
 ```sh
